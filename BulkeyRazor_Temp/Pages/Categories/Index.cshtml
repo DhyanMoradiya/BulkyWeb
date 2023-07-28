@@ -1,0 +1,41 @@
+﻿@page
+@using BulkeyRazor_Temp.Model;
+@model BulkeyRazor_Temp.Pages.Categories.IndexModel
+
+<partial name="_Notification" />   
+<div class="d-flex justify-content-between align-items-center">
+<h3>Category List</h3>
+<a class="btn btn-dark mt-3 mb-3" asp-page="/Categories/Create"><i class="bi bi-plus-circle"></i> CREATE NEW CATEGORY</a>
+</div>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Display Order
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(Category category in Model.CategoryList.OrderBy(u=>u.DisplayOrder)){
+        <tr>
+            <td>
+                @category.Name
+            </td>
+              <td>
+                @category.DisplayOrder
+            </td>
+            <td>
+                <div class="w-75 btn-group">
+                    <a  asp-page="/Categories/Edit" asp-route-id = "@category.Id" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i> Edit</a>
+                     <a  asp-page="/Categories/Delete" asp-route-id = "@category.Id" class="btn btn-danger mx-2"><i class="bi bi-trash3"></i> Delete</a>
+                </div>
+            </td>
+        </tr>
+        }
+    </tbody>
+</Table>
+

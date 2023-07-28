@@ -1,0 +1,30 @@
+﻿@model Category
+
+<form method="post">
+    <div class="border p-2">
+        <h3>Edit CATEGORY</h3>
+    </div>
+    <div class="border p-4">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="form-group mb-2">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-2">
+            <label asp-for="DisplayOrder"></label>
+            <input asp-for="DisplayOrder" class="form-control" />
+            <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+        </div>
+        <div class="d-flex justify-content-between align-items">
+            <button type="submit" asp-controller="Category" asp-action="Edit" class="btn btn-dark m-2" style="width:50%">UPDATE</button>
+            <a asp-controller="Category" asp-action="Index" class="btn btn-light btn-outline-dark m-2" style="width:50%">Back to List</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
