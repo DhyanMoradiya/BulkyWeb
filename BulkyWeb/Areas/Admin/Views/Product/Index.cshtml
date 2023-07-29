@@ -6,12 +6,9 @@
 <h3>Category List</h3>
 <a class="btn btn-dark mt-3 mb-3" asp-controller="Product" asp-action="Upsert"><i class="bi bi-plus-circle"></i> CREATE NEW PRODUCT</a>
 </div>
-<table class="table table-bordered table-striped">
+<table class="table table-bordered table-striped" id="productTable">
     <thead>
         <tr>
-            <th>
-                ID
-            </th>
             <th>
                 Title
             </th>
@@ -19,22 +16,10 @@
                 Author
             </th>
             <th>
-                Description
-            </th>
-            <th>
                 ISBN
             </th>
             <th>
-                List Price
-            </th>
-            <th>
-                Price For 1-50
-            </th>
-            <th>
-                Price For 50+
-            </th>
-            <th>
-                Price For 100+
+                Price
             </th>
             <th>
                 Category
@@ -42,47 +27,9 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach(Product product in Model){
-        <tr>
-            <td>
-                @product.Id
-            </td>
-            <td>
-                @product.Title
-            </td>
-            <td>
-                @product.Author
-            </td>
-            <td>
-                @product.Description
-            </td>
-            <td>
-                @product.ISBN
-            </td>
-            <td>
-                @product.ListPrice
-            </td>
-            <td>
-                @product.Price
-            </td>
-            <td>
-                @product.Price50
-            </td>
-            <td>
-                @product.Price100
-            </td>
-            <td>
-                @product.CategoryId
-            </td>
-            <td>
-                <div class="w-75 btn-group">
-                    <a asp-controller="Product" asp-action="Upsert" asp-route-id = "@product.Id" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i> Edit</a>
-                     <a asp-controller="Product" asp-action="Delete" asp-route-id = "@product.Id" class="btn btn-danger mx-2"><i class="bi bi-trash3"></i> Delete</a>
-                </div>
-            </td>
-        </tr>
-        }
-    </tbody>
 </Table>
+
+@section Scripts{
+    <script type="text/javascript" src="~/js/product.js"></script>
+}
 
