@@ -1,0 +1,51 @@
+﻿@model Company
+
+<form method="post" enctype="multipart/form-data" >
+    <div class="border p-2">
+        <h3>@((@Model.Id == null || @Model.Id == 0) ? "CERATE" : "UPADTE") COMPANY</h3>
+    </div>
+    <div class="border p-4">
+        <div asp-validation-summary="ModelOnly"></div>
+        <input asp-for="Id" hidden />
+        <div class="form-group mb-2">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-2">
+            <label asp-for="StreetAddress"></label>
+            <input asp-for="StreetAddress" class="form-control" />
+        </div>
+        <div class="form-group mb-2">
+            <label asp-for="City"></label>
+            <input asp-for="City" class="form-control" />
+        </div>
+        <div class="form-group mb-2">
+            <label asp-for="State"></label>
+            <input asp-for="State" class="form-control" />
+        </div>
+        <div class="form-group mb-2">
+            <label asp-for="PostalCode"></label>
+            <input asp-for="PostalCode" class="form-control" />
+        </div>
+        <div class="form-group mb-2">
+            <label asp-for="PhoneNumber"></label>
+            <input asp-for="PhoneNumber" class="form-control" />
+        </div>
+        <div class="d-flex justify-content-between align-items">
+            @if (@Model.Id == null || @Model.Id == 0)
+            {
+                <button type="submit" asp-controller="Company" asp-action="Upsert" class="btn btn-dark m-2" style="width:50%">CRETAE</button>
+            }else{
+                <button type="submit" asp-controller="Company" asp-action="Upsert" class="btn btn-dark m-2" style="width:50%">UPDATE</button>
+            }
+            <a asp-controller="Product" asp-action="Index" class="btn btn-light btn-outline-dark m-2" style="width:50%">Back to List</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+@{
+<partial name = "_ValidationScriptsPartial"/>
+}
+}

@@ -1,0 +1,36 @@
+﻿@model List<Company>  
+
+<div class="d-flex justify-content-between align-items-center">
+<h3>Company List</h3>
+<a class="btn btn-dark mt-3 mb-3" asp-controller="Company" asp-action="Upsert"><i class="bi bi-plus-circle"></i> CREATE NEW COMPANY</a>
+</div>
+<table class="table table-bordered table-striped" id="CompanyTable">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                PhoneNumber
+            </th>
+            <th>
+                StreetAddress
+            </th>
+            <th>
+                PostalCode
+            </th>
+            <th>
+                City
+            </th>
+            <th>
+                State
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+</Table>
+
+@section Scripts{
+    <script type="text/javascript" src="~/js/company.js"></script>
+}
+

@@ -4,10 +4,14 @@ using Bulky.Model.Models;
 using Bulky.DataAccess.Repository.IRepositoy;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Bulky.Model.ViewModels;
+using Bulky.Utility;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace BulkyWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -20,8 +24,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Product> productList = _unitOfWork.ProductRepository.GetAll("Category").ToList();
-            return View(productList);
+            return View();
         }
 
 
@@ -84,11 +87,13 @@ namespace BulkyWeb.Areas.Admin.Controllers
             if (productVM.product.Id == 0 || productVM.product.Id == null)
             {
                 _unitOfWork.ProductRepository.Add(productVM.product);
-            }
+                    TempData["success"] = "PRODUCT CREATED SUCCESSFULLY";
+                }
             else
             {
                 _unitOfWork.ProductRepository.Update(productVM.product);
-            }
+                    TempData["success"] = "PRODUCT UPDATED SUCCESSFULLY";
+                }
             _unitOfWork.Save();
             return RedirectToAction("Index");
             }
@@ -102,19 +107,6 @@ namespace BulkyWeb.Areas.Admin.Controllers
                 return View(productVM);
             }
 
-        }
-
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? Id)
-        {
-            if (Id == null)
-            {
-                return NotFound();
-            }
-            Product product = _unitOfWork.ProductRepository.Get(u => u.Id == Id);
-            _unitOfWork.ProductRepository.Remove(product);
-            _unitOfWork.Save();
-            return RedirectToAction("index");
         }
 
 
@@ -148,6 +140,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
                 }
                 _unitOfWork.ProductRepository.Remove(productTobeDeleted); 
                 _unitOfWork.Save();
+                TempData["success"] = "CATEGORY DELETED SUCCESSFULLY";
                 return Json(new { success = true, message = "Delete successfully" });
             }
             return Json(new { success = false, message = "Delete Fail !"}); 

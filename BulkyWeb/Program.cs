@@ -3,6 +3,8 @@ using Bulky.DataAccess.Repository.IRepositoy;
 using BulkyWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Bulky.Utility;
 
 namespace BulkyWeb
 {
@@ -16,8 +18,15 @@ namespace BulkyWeb
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddRazorPages();   
-            builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LogoutPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
 
             var app = builder.Build();
 
