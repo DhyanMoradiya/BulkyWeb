@@ -115,7 +115,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAllProducts()
         {
-            List<Product> productList = _unitOfWork.ProductRepository.GetAll("Category").ToList();
+            List<Product> productList = _unitOfWork.ProductRepository.GetAll(null, "Category").ToList();
             return Json(new { data = productList });
         }
 

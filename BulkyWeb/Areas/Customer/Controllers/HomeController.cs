@@ -13,12 +13,10 @@ namespace BulkyWeb.Areas.Customer.Controllers
     public class HomeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        private ApplicationDbContext _db;
 
-        public HomeController(IUnitOfWork unitOfWOrk, ApplicationDbContext db)
+        public HomeController(IUnitOfWork unitOfWOrk)
         {
             _unitOfWork = unitOfWOrk;
-            _db = db;
         }
 
         public IActionResult Index()
@@ -46,14 +44,27 @@ namespace BulkyWeb.Areas.Customer.Controllers
             var claimIdentity = (ClaimsIdentity)User.Identity;
             string userId = claimIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
             shoppingCart.ApplicationUserId = userId;
-
-            //context.Database.OpenConnection();
-            //context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.ShoppingCarts ON");
             shoppingCart.Id = 0;
-            _unitOfWork.ShoppingCartRepository.Add(shoppingCart);
+
+            ShoppingCart cartFromDb = _unitOfWork.ShoppingCartRepository.Get(u => u.ApplicationUserId == userId && u.ProductId == shoppingCart.ProductId);
+
+            if(cartFromDb != null)
+            {
+                cartFromDb.Count += shoppingCart.Count;
+                _unitOfWork.ShoppingCartRepository.Update(cartFromDb);
+            }
+            else
+            {
+                shoppingCart.Id = 0;
+                _unitOfWork.ShoppingCartRepository.Add(shoppingCart);
+            }
+
+            
             _unitOfWork.Save();
 
-            return View();
+            TempData["success"] = "Product Added to Cart";
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()

@@ -32,15 +32,7 @@ namespace Bulky.DataAccess.Repository
 
         public void Save()
         {
-            try
-            {
                 _db.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
         }
     }
 }
