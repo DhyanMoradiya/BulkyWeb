@@ -18,6 +18,8 @@ namespace BulkyWeb.Data
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Company> companies { get; set; }
         public DbSet<ShoppingCart> shoppingCarts { get; set; }
+        public DbSet<OrderHeader> orderHeaders { get; set; }
+        public DbSet<OrderDetail> orderDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

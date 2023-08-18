@@ -16,6 +16,8 @@ namespace Bulky.DataAccess.Repository
         public ICompanyRepository CompanyRepository { get; private set; }
          public IShoppingCartRepository ShoppingCartRepository { get; private set; }
         public IApplicationUserRepository ApplicationUserRepository { get; private set; }
+        public IOrderDetailRepository OrderDetailRepository { get; private set; }
+        public IOrderHeaderRepository OrderHeaderRepository { get; private set; }
 
         private readonly ApplicationDbContext _db;
 
@@ -28,6 +30,8 @@ namespace Bulky.DataAccess.Repository
             CompanyRepository = new CompanyRepository(db);
             ShoppingCartRepository = new ShoppingCartRepository(db);
             ApplicationUserRepository = new ApplicationUserRepository(db);
+            OrderDetailRepository = new OrderDetailRepository(db);  
+            OrderHeaderRepository = new OrderHeaderRepository(db);
         }
 
         public void Save()
