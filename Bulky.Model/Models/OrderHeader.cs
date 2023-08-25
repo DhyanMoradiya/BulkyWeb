@@ -26,7 +26,7 @@ namespace Bulky.Model.Models
         public string? OrderStatus { get; set; }    
         public string? PaymentStatus { get; set; }
 		public string? TrakingNumber { get; set;}
-        public string? Carrier { get;}
+        public string? Carrier { get; set; }
 
 
         public DateTime PaymentDate { get; set; }

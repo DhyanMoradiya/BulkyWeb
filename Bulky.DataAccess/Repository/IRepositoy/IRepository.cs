@@ -14,6 +14,6 @@ namespace Bulky.DataAccess.Repository.IRepositoy
         void Add(T item);
 
         void Remove(T item);
-        void RemoveRange(T item);
+        void RemoveRange(List<T> item);
     }
 }

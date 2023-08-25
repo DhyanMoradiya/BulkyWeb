@@ -72,7 +72,7 @@ namespace Bulky.DataAccess.Repository
             dbSet.Remove(item);
         }
 
-        public void RemoveRange(T item)
+        public void RemoveRange(List<T> item)
         {
             dbSet.RemoveRange(item);
         }
