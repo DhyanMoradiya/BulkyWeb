@@ -24,15 +24,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
         public IActionResult Index()
         {
 
-            List<Product> productList = _unitOfWork.ProductRepository.GetAll(includeProperties : "Category").ToList();
-
-            var claimIdentity = (ClaimsIdentity)User.Identity;
-            string userId = claimIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (userId != null)
-            {
-                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == userId).Count());
-            }
-
+            List<Product> productList = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category").ToList();
             return View(productList);
         }
 
