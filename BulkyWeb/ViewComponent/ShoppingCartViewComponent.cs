@@ -19,7 +19,7 @@ namespace BulkyWeb.ComponetModel
 
             if (userId != null)
             {
-                if (HttpContext.Session.GetInt32(SD.SessionCart) == null)
+                if (HttpContext.Session.GetInt32(SD.SessionCart) == null) 
                 {
                     HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == userId.Value).Count());
                 }

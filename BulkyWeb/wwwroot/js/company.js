@@ -8,7 +8,7 @@ function LoadDataTable() {
     dataTable = $('#CompanyTable').DataTable({
         "ajax": { url: '/Admin/Company/GetAllCompany' },
         columns: [
-            { data: 'name', "width": "20%" },
+            { data: 'name', "width": "15%" },
             { data: 'phoneNumber', "width": "15%" },
             { data: 'streetAddress', "width": "15%" },
             { data: 'postalCode', "width": "10%" },
@@ -22,7 +22,7 @@ function LoadDataTable() {
                      <a onclick="deleteCompany('/admin/Company/delete/${data}')" class="btn btn-danger mx-2"><i class="bi bi-trash3"></i> Delete</a>
                 </div>`
                 },
-                "width": "25%"
+                "width": "30%"
             }
         ]
     });

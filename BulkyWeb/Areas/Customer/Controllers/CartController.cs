@@ -162,12 +162,12 @@ namespace BulkyWeb.Areas.Customer.Controllers
                 _unitOfWork.Save();
 			}
 
-            if(applicationUser.CompanyId == 0)
+            if(applicationUser.CompanyId == 0 || applicationUser.CompanyId == null)
             {
-				//regulor customer user
-				//add strip logic
-                var domain = "https://localhost:7067/";
-				var options = new SessionCreateOptions
+                //regulor customer user
+                //add strip logic
+                var domain = Request.Scheme + "//:" + Request.Host.Value + "/";
+                var options = new SessionCreateOptions
                 { 
 					SuccessUrl = domain + $"customer/cart/OrderConformation?id={shoppingCartVM.OrderHeader.Id}",
                     CancelUrl = domain + "customer/cart/index",
@@ -211,21 +211,29 @@ namespace BulkyWeb.Areas.Customer.Controllers
 
         public IActionResult OrderConformation(int id)
         {
-            OrderHeader orderHeader = _unitOfWork.OrderHeaderRepository.Get(u => u.Id == id);
-
-            var service = new SessionService();
-            Session session = service.Get(orderHeader.SessionId);
-
-            if(session.PaymentStatus.ToLower() == "paid")
+            OrderHeader orderHeader = _unitOfWork.OrderHeaderRepository.Get(u => u.Id == id, includeProperties:"ApplicationUser");
+            if (orderHeader.ApplicationUser.CompanyId != 0 || orderHeader.ApplicationUser.CompanyId != null)
             {
-                _unitOfWork.OrderHeaderRepository.UpdateStripePaymentId(orderHeader.Id, session.Id, session.PaymentIntentId);
-                _unitOfWork.OrderHeaderRepository.UpdateStatus(orderHeader.Id,SD.StatusApproved, SD.PaymentStatusApproved);
-                _unitOfWork.Save();
+                var service = new SessionService();
+                Session session = service.Get(orderHeader.SessionId);
+
+                if (session.PaymentStatus.ToLower() == "paid")
+                {
+                    _unitOfWork.OrderHeaderRepository.UpdateStripePaymentId(orderHeader.Id, session.Id, session.PaymentIntentId);
+                    _unitOfWork.OrderHeaderRepository.UpdateStatus(orderHeader.Id, SD.StatusApproved, SD.PaymentStatusApproved);
+                   
+                }
             }
-            
+            else
+            {
+                _unitOfWork.OrderHeaderRepository.UpdateStatus(orderHeader.Id, SD.StatusApproved);
+            }
+            _unitOfWork.Save();
+
             List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCartRepository.GetAll(u=> u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
             _unitOfWork.ShoppingCartRepository.RemoveRange(shoppingCarts);
             _unitOfWork.Save();
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).Count());
 
             return View(id);
         }

@@ -141,7 +141,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
             if(OrderVM.orderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment)
             {
                 //add strip logic
-                var domain = "https://localhost:7067/";
+                var domain = Request.Scheme + "//:" + Request.Host.Value + "/";
                 var options = new SessionCreateOptions
                 {
                     SuccessUrl = domain + $"Admin/Order/OrderConformation?orderId={OrderVM.orderHeader.Id}",
@@ -199,6 +199,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
             List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
             _unitOfWork.ShoppingCartRepository.RemoveRange(shoppingCarts);
             _unitOfWork.Save();
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).Count());
 
             return View(orderId);
 
