@@ -1,0 +1,52 @@
+﻿@model RoleManagementVM
+
+<form method="post" >
+    <div class="border p-2">
+        <h3>Role Management</h3>
+    </div>
+    <div class="border p-4">
+        <div asp-validation-summary="ModelOnly"></div>
+        <input asp-for="ApplicationUser.Id" hidden />
+        <div class= "form-group mb-2">
+          
+            <input asp-for="ApplicationUser.Name" readonly class="form-control" />
+        </div>
+        <div class="form-group mb-2">
+          
+            <select asp-for="ApplicationUser.Role" value="@Model.ApplicationUser.Role" asp-items="@Model.RoleList" class="form-select"></select>
+        </div>
+        @{
+            var companyVisible = "display:none";
+        }
+        @if (Model.ApplicationUser.Role == SD.Role_Company)
+        {
+            companyVisible = "display:block";
+        }
+        <div class="form-group mb-2">
+          
+            <select asp-for="ApplicationUser.CompanyId" style="@companyVisible" asp-items="@Model.CompanyList" class="form-select"></select>
+        </div>
+        <div class="d-flex justify-content-between align-items">
+        <button type="submit" asp-controller="User"  class="btn btn-dark m-2" style="width:50%">UPDATE</button>
+            <a  asp-action="Index" class="btn btn-light btn-outline-dark m-2" style="width:50%" >Back to List</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    @{
+    <partial name = "_ValidationScriptsPartial"/>
+            <script>
+                $(document).ready(()=>{
+                $("#ApplicationUser_Role").change(() => {
+                    if ($("#ApplicationUser_Role").val() == "Company") {
+                        $("#ApplicationUser_CompanyId").show();
+                        } else {
+                        $("#ApplicationUser_CompanyId").hide();
+                        }
+                    })
+                }
+                )
+            </script>
+    }
+}

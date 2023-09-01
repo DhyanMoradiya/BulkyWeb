@@ -1,4 +1,5 @@
 ﻿using Bulky.Model.Models;
+using BulkyWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Bulky.DataAccess.Repository.IRepositoy
 {
-    public interface IApplicationUserRepository : IRepository<ApplicationUser>
+    public interface IProductImageRepository : IRepository<ProductImage>
     {
-        public void Update(ApplicationUser applicationUser);
+        void Update(ProductImage productImage);
     }
 }

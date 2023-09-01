@@ -24,7 +24,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
         public IActionResult Index()
         {
 
-            List<Product> productList = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category").ToList();
+            List<Product> productList = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category, ProductImages").ToList();
             return View(productList);
         }
 
@@ -32,12 +32,12 @@ namespace BulkyWeb.Areas.Customer.Controllers
         {
             ShoppingCart shoppingCart = new()
             {
-                Product = _unitOfWork.ProductRepository.Get(u => u.Id == id, includeProperties: "Category"),
-                ProductId = id,
-                Count = 1
+                Product = _unitOfWork.ProductRepository.Get(u => u.Id == id, includeProperties: "Category,ProductImages"),
+                Count = 1,
+                ProductId = id
             };
-            
             return View(shoppingCart);
+
         }
 
 

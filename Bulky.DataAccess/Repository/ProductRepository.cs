@@ -32,10 +32,11 @@ namespace Bulky.DataAccess.Repository
                 productFormDb.ISBN = product.ISBN;
                 productFormDb.Author = product.Author;
                 productFormDb.CategoryId = product.CategoryId;
-                if(product.ImageURL != null)
+                productFormDb.ProductImages = product.ProductImages;    
+               /* if (product.ImageURL != null)
                 {
                     productFormDb.ImageURL = product.ImageURL;
-                }
+                }*/
             }
            _db.Products.Update(productFormDb);
         }

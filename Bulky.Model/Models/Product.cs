@@ -50,7 +50,8 @@ namespace Bulky.Model.Models{
         public Category Category { get; set; }
 
         [ValidateNever]
-        [Display(Name = "Image URL")]
-        public string ImageURL { get; set; }
+        public List<ProductImage> ProductImages { get; set; }   
+
     }
+
 }

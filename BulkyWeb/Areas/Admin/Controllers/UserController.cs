@@ -1,10 +1,14 @@
 ﻿using Bulky.DataAccess.Repository.IRepositoy;
 using Bulky.Model.Models;
+using Bulky.Model.ViewModels;
 using Bulky.Utility;
 using BulkyWeb.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Octokit;
 
 namespace BulkyWeb.Areas.Admin.Controllers
 {
@@ -13,48 +17,75 @@ namespace BulkyWeb.Areas.Admin.Controllers
     public class UserController : Controller
     {
 
-        private readonly ApplicationDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityUser> _roleManager;
 
-        public UserController(ApplicationDbContext db)
+        public UserController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager, RoleManager<IdentityUser> roleManager)
         {
-            _db = db;
+            _userManager = userManager;
+            _unitOfWork = unitOfWork;
+            _roleManager = roleManager;
         }
         public IActionResult Index()
         {
             return View();
         }
 
-        //public IActionResult Upsert(int? Id) {
-        //    if (Id != null || Id != 0) { 
-        //        Company company = _unitOfWork.CompanyRepository.Get(u => u.Id == Id);
-        //        if (company != null)
-        //        {
-        //            return View(company);
-        //        }
-        //    }
-        //    return View(new Company());
-        //}
+        public IActionResult RoleManagement(string userId)
+        {
 
-        //[HttpPost]
-        //public IActionResult Upsert(Company company)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        if(company.Id == 0)
-        //        {
-        //            _unitOfWork.CompanyRepository.Add(company);
-        //            TempData["success"] = "COMPANY CREATED SUCCESSFULLY";
-        //        }
-        //        else
-        //        {
-        //            _unitOfWork.CompanyRepository.Update(company);
-        //            TempData["success"] = "COMPANY UPDATED SUCCESSFULLY";
-        //        }
-        //        _unitOfWork.Save();
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(company);
-        //}
+            RoleManagementVM roleManagementVM = new()
+            {
+                ApplicationUser = _unitOfWork.ApplicationUserRepository.Get(u => u.Id == userId, includeProperties:"Company"),
+                RoleList = _roleManager.Roles.Select(i => new SelectListItem{
+                    Text = i.Name,
+                    Value = i.Name.ToString(),
+                }),
+                CompanyList  = _unitOfWork.CompanyRepository.GetAll().Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString(),
+                })
+            };
+
+            roleManagementVM.ApplicationUser.Role = _userManager.GetRolesAsync(_unitOfWork.ApplicationUserRepository.Get(u=>u.Id == userId)).GetAwaiter().GetResult().FirstOrDefault();
+
+            return View(roleManagementVM);
+        }
+
+
+        [HttpPost]
+        public IActionResult RoleManagement(RoleManagementVM roleManagementVM)
+        {
+
+            string oldRole = _userManager.GetRolesAsync(_unitOfWork.ApplicationUserRepository.Get(u => u.Id == roleManagementVM.ApplicationUser.Id)).GetAwaiter().GetResult().FirstOrDefault();
+
+
+            if (roleManagementVM.ApplicationUser.Role != oldRole)
+            {
+                //Role is updated
+                ApplicationUser applicationUser = _unitOfWork.ApplicationUserRepository.Get(u => u.Id == roleManagementVM.ApplicationUser.Id);
+                if(roleManagementVM.ApplicationUser.Role == SD.Role_Company)
+                {
+                    applicationUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
+                }
+                if(oldRole == SD.Role_Company){
+                    applicationUser.CompanyId = null;
+                }
+                _unitOfWork.ApplicationUserRepository.Update(applicationUser);
+                _unitOfWork.Save();
+
+                _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
+                _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role).GetAwaiter().GetResult() ;
+            }
+
+            TempData["Success"] = "Role Updated.";
+
+            return RedirectToAction("Index");
+        }
+
+
 
 
         #region API
@@ -91,7 +122,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
             {
                 return Json(new { success = false, message = "Error while locking/unlocking" });
             }
-           if(userObj.LockoutEnd != null || userObj.LockoutEnd > DateTime.Now)
+           if(userObj.LockoutEnd > DateTime.Now)
             {
                 userObj.LockoutEnd = DateTime.Now;
             }
