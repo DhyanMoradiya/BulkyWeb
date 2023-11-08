@@ -30,12 +30,16 @@ namespace BulkyWeb.Areas.Customer.Controllers
 
         public IActionResult Details(int id)
         {
-            ShoppingCart shoppingCart = new()
+            ShoppingCart shoppingCart = new();
+            if (shoppingCart.Product == null)
             {
-                Product = _unitOfWork.ProductRepository.Get(u => u.Id == id, includeProperties: "Category,ProductImages"),
-                Count = 1,
-                ProductId = id
-            };
+                shoppingCart = new()
+                {
+                    Product = _unitOfWork.ProductRepository.Get(u => u.Id == id, includeProperties: "ProductImages,Category"),
+                    Count = 1,
+                    ProductId = id
+                };
+            }
             return View(shoppingCart);
 
         }

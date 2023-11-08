@@ -169,7 +169,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
             {
                 //regulor customer user
                 //add strip logic
-                var domain = Request.Scheme + "//:" + Request.Host.Value + "/";
+                var domain = Request.Scheme + "://" + Request.Host.Value + "/";
                 var options = new SessionCreateOptions
                 { 
 					SuccessUrl = domain + $"customer/cart/OrderConformation?id={shoppingCartVM.OrderHeader.Id}",
